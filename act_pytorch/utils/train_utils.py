@@ -27,6 +27,8 @@ class Logger:
 
 
 def get_norm_stats(args):
+    """计算整个训练数据集的归一化统计量"""
+
     all_qpos_data = []
     all_action_data = []
     file_paths = glob(os.path.join(args.dataset_dir, '*.h5'))

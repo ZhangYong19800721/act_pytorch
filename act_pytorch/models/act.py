@@ -12,6 +12,7 @@ e = IPython.embed
 
 
 def reparametrize(mu, logvar):
+    """Reparameterization trick to sample from N(mu, var) from N(0,1)"""
     std = logvar.div(2).exp()
     eps = Variable(std.data.new(std.size()).normal_())
     return mu + std * eps
@@ -59,6 +60,7 @@ class ACT(nn.Module):
         self.latent_dim = latent_dim
         hidden_dim = transformer.d_model
         self.action_head = nn.Linear(hidden_dim, action_dim)
+
         # VAE encoder
         self.cls_embed = nn.Embedding(1, hidden_dim)  # extra [CLS] token embedding
         self.encoder_action_proj = nn.Linear(action_dim, hidden_dim) # project action sequence to embedding
@@ -71,6 +73,7 @@ class ACT(nn.Module):
         be fixed during back propagation
         """
         self.register_buffer('pos_table', get_sinusoid_encoding_table(1+1+num_queries, hidden_dim)) # [CLS], joint_pos, action_seq
+        
         # VAE decoder
         self.input_proj_robot_state = nn.Linear(state_dim, hidden_dim)  # project joint positions to proprio embedding
         self.latent_out_proj = nn.Linear(self.latent_dim, hidden_dim)  # project latent z to latent embedding
